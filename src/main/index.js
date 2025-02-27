@@ -9,19 +9,24 @@ app.name = "BetterDiscord";
 let mainWindow; // global reference to mainWindow (necessary to prevent window from being garbage collected)
 
 function createMainWindow() {
+
+    // Check for arguments
+    const autoInstall = process.argv.includes("-autoinstall");
+
     const window = new BrowserWindow({
-        title: "BetterDiscord Installer",
+        title: "AutoBetterDiscord Installer",
         frame: false,
         width: 550,
         height: 350,
         resizable: false,
         fullscreenable: false,
         maximizable: false,
-        backgroundColor: "#0c0d10",
+        backgroundColor: autoInstall ? "#3a0ca3" : "#0c0d10",
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            enableRemoteModule: true
+            enableRemoteModule: true,
+            additionalArguments: [(autoInstall ? "autoinstall" : "")]
         }
     });
 

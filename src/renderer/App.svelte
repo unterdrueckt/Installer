@@ -6,6 +6,35 @@
     import Footer from "./common/Footer.svelte";
     import Router from "svelte-spa-router";
     import routes from "./routes";
+    import { get } from "svelte/store";
+    import { paths, platforms } from "./stores/installation";
+    import { platforms as platformLabels } from "./actions/paths";
+    import { push } from "svelte-spa-router";
+
+    let autoInstall = false;
+
+    if (process && process.argv) {
+        autoInstall = process.argv.includes("autoinstall");
+    }
+    
+    if(autoInstall) {
+        console.info("Try to auto install");
+        const platformPaths = get(paths)
+        
+        for (const [platformLabel, platformDesc] of Object.entries(platformLabels)) {
+            if(platformPaths[platformLabel]) {
+                console.info(`Auto selected platform: ${platformLabel} - ${platformDesc}`)
+                platforms[platformLabel] = true;
+                platforms.update(s => ({
+                    ...s, 
+                    [platformLabel]: true
+                }));
+                break;
+            }
+        }
+        push(`/install`);
+    }
+
 </script>
 
 <div class="main-window platform-{process.platform || "win32"}">
